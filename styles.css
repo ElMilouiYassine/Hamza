@@ -1,0 +1,783 @@
+/* =========================================
+   HAMZA RH – VIVIER DE CANDIDATS
+   Feuille de style principale
+   ========================================= */
+
+/* ---------- VARIABLES ---------- */
+:root {
+  --bg: #F3F4EF;
+  --surface: #FFFFFF;
+  --ink: #1E2A26;
+  --ink-soft: #5B6B63;
+  --border: #E2E4DC;
+  --teal: #2F6F5E;
+  --teal-soft: #E4EFEC;
+  --teal-hover: #d7e8e3;
+  --amber: #C98A3B;
+  --amber-soft: #F7EBD9;
+  --slate: #5B6B7A;
+  --slate-soft: #E9ECEF;
+  --danger: #B4483C;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(30, 42, 38, 0.06), 0 4px 16px rgba(30, 42, 38, 0.05);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.25);
+  --transition: 0.15s ease;
+}
+
+/* ---------- RESET & BASE ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- UTILITAIRES ---------- */
+.hidden {
+  display: none !important;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+/* ---------- HEADER ---------- */
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.header-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.header-brand h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+}
+
+.project-tag {
+  background: var(--teal-soft);
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-name::before {
+  content: "👤";
+  font-size: 15px;
+}
+
+.role-badge {
+  background: var(--amber-soft);
+  color: var(--amber);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- MAIN CONTENT ---------- */
+#root {
+  flex: 1;
+  padding: 24px;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- TYPOGRAPHIE ---------- */
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.sub {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ---------- STATISTIQUES ---------- */
+.stats {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  min-width: 130px;
+  box-shadow: var(--shadow);
+}
+
+.stat .n {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.stat .l {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+.stat.now .n {
+  color: var(--teal);
+}
+
+.stat.soon .n {
+  color: var(--amber);
+}
+
+/* ---------- RECHERCHE & FILTRES ---------- */
+.search-row input {
+  width: 100%;
+  font-size: 15px;
+  padding: 13px 16px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color var(--transition);
+}
+
+.search-row input:focus {
+  border-color: var(--teal);
+  outline: none;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 16px 0;
+}
+
+/* ---------- FORMULAIRES (INPUTS, SELECTS) ---------- */
+select,
+input[type="text"],
+input[type="date"],
+textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px var(--teal-soft);
+}
+
+/* ---------- BOUTONS ---------- */
+.btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, background var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #0f1815;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  background: var(--surface);
+}
+
+.btn-danger-text {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 12.5px;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+}
+
+.btn-danger-text:hover {
+  text-decoration: underline;
+}
+
+/* ---------- TABLEAU ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+thead th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  font-weight: 600;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: color var(--transition);
+}
+
+thead th:hover {
+  color: var(--ink);
+}
+
+thead th.sorted::after {
+  content: ' ▾';
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+tbody td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  vertical-align: top;
+  transition: background var(--transition);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  background: #fafaf8;
+}
+
+/* Indicateurs de statut sur la gauche */
+tbody tr td:first-child {
+  border-left: 4px solid transparent;
+}
+
+tr.st-now td:first-child {
+  border-left-color: var(--teal);
+}
+
+tr.st-soon td:first-child {
+  border-left-color: var(--amber);
+}
+
+tr.st-mission td:first-child {
+  border-left-color: var(--slate);
+}
+
+/* ---------- CELLULES SPÉCIFIQUES ---------- */
+.name {
+  font-weight: 600;
+}
+
+.meta {
+  color: var(--ink-soft);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* Badges de statut */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.badge.now {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.badge.soon {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.badge.mission {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Compteur de jours */
+.countdown {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+/* Notes avec troncature */
+.notes {
+  max-width: 260px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.notes:hover {
+  color: var(--ink);
+}
+
+.notes.expanded {
+  -webkit-line-clamp: unset;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 0;
+  transition: color var(--transition);
+}
+
+.actions button:hover {
+  color: var(--ink);
+}
+
+/* ---------- CV ---------- */
+.cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--teal);
+  background: var(--teal-soft);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition);
+}
+
+.cv-btn:hover {
+  background: var(--teal-hover);
+}
+
+.cv-none {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+/* ---------- PAGINATION ---------- */
+.pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+.pagination button {
+  padding: 6px 14px;
+}
+
+.pagination select {
+  margin-left: 12px;
+}
+
+/* ---------- ÉTAT VIDE ---------- */
+.empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.empty b {
+  color: var(--ink);
+}
+
+/* ---------- FAVORIS ---------- */
+.favorite {
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 6px;
+  color: var(--border);
+  transition: color var(--transition);
+}
+
+.favorite.is-fav {
+  color: var(--amber);
+}
+
+.favorite:hover {
+  color: var(--amber);
+}
+
+/* ---------- OVERLAY & MODAL ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 28, 25, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 26px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--shadow-lg);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  margin-bottom: 4px;
+}
+
+.modal .sub {
+  margin-bottom: 16px;
+}
+
+/* Champs de formulaire dans la modale */
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+}
+
+.field textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  min-height: 70px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+/* Upload CV */
+.cv-upload {
+  text-align: center;
+  padding: 12px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.cv-upload:hover {
+  border-color: var(--teal);
+}
+
+.cv-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--teal-soft);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.cv-current button {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+/* ---------- TOAST ---------- */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+/* ---------- INDICATEUR BASE DE DONNÉES ---------- */
+.db-indicator {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-indicator .path {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--teal);
+}
+
+/* ---------- FOOTER (AJOUTÉ) ---------- */
+.app-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-top: auto; /* le pousse en bas grâce au flex column du body */
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-left strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.footer-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-right span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 640px) {
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+
+  table,
+  thead,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    border-bottom: 6px solid var(--bg);
+    padding: 10px 0;
+  }
+
+  tbody td {
+    border-bottom: none;
+    padding: 4px 14px;
+  }
+
+  .app-header,
+  .app-footer {
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

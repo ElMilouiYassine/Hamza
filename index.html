@@ -1,775 +1,570 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hamza RH – Vivier de candidats</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#F3F4EF;
-    --surface:#FFFFFF;
-    --ink:#1E2A26;
-    --ink-soft:#5B6B63;
-    --border:#E2E4DC;
-    --teal:#2F6F5E;
-    --teal-soft:#E4EFEC;
-    --amber:#C98A3B;
-    --amber-soft:#F7EBD9;
-    --slate:#5B6B7A;
-    --slate-soft:#E9ECEF;
-    --danger:#B4483C;
-    --radius:10px;
-    --shadow:0 1px 2px rgba(30,42,38,0.06), 0 4px 16px rgba(30,42,38,0.05);
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    font-family:'Inter',sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-  }
-
-  /* ----- HEADER ----- */
-  .app-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    padding: 14px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .header-brand {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .header-brand h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 20px;
-    margin: 0;
-    color: var(--ink);
-    letter-spacing: -0.3px;
-  }
-  .header-brand .project-tag {
-    background: var(--teal-soft);
-    color: var(--teal);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .header-user {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .header-user .user-name {
-    font-weight: 600;
-    color: var(--ink);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .header-user .user-name::before {
-    content: "👤";
-    font-size: 15px;
-  }
-  .header-user .role-badge {
-    background: var(--amber-soft);
-    color: var(--amber);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-  }
-
-  /* ----- MAIN CONTENT ----- */
-  #root {
-    flex: 1;
-    padding: 24px;
-  }
-
-  /* ----- FOOTER FIXÉ EN BAS ----- */
-  .app-footer {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 12px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 12.5px;
-    color: var(--ink-soft);
-    margin-top: auto;
-  }
-  .app-footer .footer-left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .app-footer .footer-left strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-  .app-footer .footer-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .app-footer .footer-right span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .app-footer .footer-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--teal);
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  /* ----- STYLES EXISTANTS (légèrement adaptés pour l'intégration) ----- */
-  .wrap{max-width:1200px;margin:0 auto;}
-  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);margin:0 0 6px;}
-  h1{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;margin:0 0 4px;letter-spacing:-0.01em;}
-  .sub{color:var(--ink-soft);font-size:14px;margin:0 0 20px;}
-  .stats{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
-  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;min-width:130px;box-shadow:var(--shadow);}
-  .stat .n{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;}
-  .stat .l{font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
-  .stat.now .n{color:var(--teal);}
-  .stat.soon .n{color:var(--amber);}
-  .search-row input{width:100%;font-size:15px;padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);box-shadow:var(--shadow);}
-  .search-row input:focus{border-color:var(--teal);}
-  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0;}
-  select,input{font-family:'Inter',sans-serif;font-size:13.5px;border:1px solid var(--border);border-radius:8px;padding:9px 12px;background:var(--surface);color:var(--ink);}
-  select:focus,input:focus{outline:2px solid var(--teal);outline-offset:1px;}
-  .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;border:none;border-radius:8px;padding:9px 16px;cursor:pointer;transition:transform .08s ease, box-shadow .15s ease;}
-  .btn:active{transform:scale(0.97);}
-  .btn-primary{background:var(--ink);color:#fff;}
-  .btn-primary:hover{background:#0f1815;}
-  .btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border);}
-  .btn-ghost:hover{background:var(--surface);}
-  .btn-danger-text{background:none;border:none;color:var(--danger);font-size:12.5px;cursor:pointer;font-weight:600;}
-  table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
-  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);font-weight:600;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;position:relative;}
-  thead th:hover{color:var(--ink);}
-  thead th.sorted::after{content:' ▾';font-size:10px;margin-left:4px;}
-  tbody td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:top;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr td:first-child{border-left:4px solid transparent;}
-  tr.st-now td:first-child{border-left-color:var(--teal);}
-  tr.st-soon td:first-child{border-left-color:var(--amber);}
-  tr.st-mission td:first-child{border-left-color:var(--slate);}
-  .name{font-weight:600;}
-  .meta{color:var(--ink-soft);font-size:12px;margin-top:2px;}
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:100px;white-space:nowrap;}
-  .badge.now{background:var(--teal-soft);color:var(--teal);}
-  .badge.soon{background:var(--amber-soft);color:var(--amber);}
-  .badge.mission{background:var(--slate-soft);color:var(--slate);}
-  .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
-  .countdown{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:4px;}
-  .notes{max-width:260px;color:var(--ink-soft);font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;}
-  .notes.expanded{-webkit-line-clamp:unset;}
-  .actions{display:flex;gap:10px;white-space:nowrap;}
-  .actions button{background:none;border:none;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--ink-soft);padding:0;}
-  .actions button:hover{color:var(--ink);}
-  .cv-btn{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--teal);background:var(--teal-soft);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;text-decoration:none;white-space:nowrap;}
-  .cv-btn:hover{background:#d7e8e3;}
-  .cv-none{color:var(--ink-soft);font-size:12.5px;}
-  .pagination{display:flex;gap:8px;align-items:center;margin-top:16px;font-size:13px;}
-  .pagination button{padding:6px 14px;}
-  .pagination select{margin-left:12px;}
-  .empty{padding:60px 20px;text-align:center;color:var(--ink-soft);}
-  .empty b{color:var(--ink);}
-  .favorite{font-size:16px;cursor:pointer;margin-right:6px;color:var(--border);}
-  .favorite.is-fav{color:var(--amber);}
-  .overlay{position:fixed;inset:0;background:rgba(20,28,25,0.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
-  .modal{background:var(--surface);border-radius:14px;padding:26px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.25);max-height:88vh;overflow-y:auto;}
-  .modal h2{font-family:'Space Grotesk',sans-serif;font-size:19px;margin:0 0 4px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;}
-  .field input,.field select,.field textarea{width:100%;}
-  .field textarea{font-family:'Inter',sans-serif;font-size:13.5px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;resize:vertical;min-height:70px;}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
-  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:100px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,0.2);opacity:0;transition:opacity .25s ease;pointer-events:none;z-index:60;}
-  .toast.show{opacity:1;}
-  .db-indicator{font-size:12px;color:var(--ink-soft);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-  .db-indicator .path{font-family:'IBM Plex Mono',monospace;color:var(--teal);}
-  @media(max-width:640px){
-    .row2{grid-template-columns:1fr;}
-    table,thead,tbody,tr,td{display:block;width:100%;}
-    thead{display:none;}
-    tbody tr{border-bottom:6px solid var(--bg);padding:10px 0;}
-    tbody td{border-bottom:none;padding:4px 14px;}
-    .app-header, .app-footer {
-      padding: 12px 16px;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamza RH – Vivier de candidats</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <!-- Feuille de style séparée -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
-<header class="app-header">
+  <!-- ========== HEADER ========== -->
+  <header class="app-header">
     <div class="header-brand">
-        <h2>📋 Hamza RH</h2>
-        <span class="project-tag">Projet RH</span>
+      <h2>📋 Hamza RH</h2>
+      <span class="project-tag">Projet RH</span>
     </div>
     <div class="header-user">
-        <span class="user-name">Hamza</span>
-        <span class="role-badge">Gestion RH</span>
+      <span class="user-name">Hamza</span>
+      <span class="role-badge">Gestion RH</span>
     </div>
-</header>
+  </header>
 
-<div id="root"><div class="loading">Connexion à la base…</div></div>
+  <div id="root"><div class="loading">Connexion à la base…</div></div>
 
-<!-- ========== FOOTER ========== -->
-<footer class="app-footer">
+  <!-- ========== FOOTER ========== -->
+  <footer class="app-footer">
     <div class="footer-left">
-        <span class="footer-dot"></span>
-        <strong>Hamza</strong> · Gestion des Ressources Humaines
+      <span class="footer-dot"></span>
+      <strong>Hamza</strong> · Gestion des Ressources Humaines
     </div>
     <div class="footer-right">
-        <span>© 2024 Hamza RH</span>
-        <span style="font-family: 'IBM Plex Mono', monospace;">v1.0</span>
+      <span>© 2024 Hamza RH</span>
+      <span style="font-family: 'IBM Plex Mono', monospace;">v1.0</span>
     </div>
-</footer>
+  </footer>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const SUPABASE_URL = 'https://rjqcbrwyqpfhrftfsdvy.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_dlYCOUdp8yDEpZ9gWxEBXw_XwoMsQ_V'
+    const SUPABASE_URL = 'https://rjqcbrwyqpfhrftfsdvy.supabase.co'
+    const SUPABASE_ANON_KEY = 'sb_publishable_dlYCOUdp8yDEpZ9gWxEBXw_XwoMsQ_V'
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-const METIERS = ['Chef gérant','Second de cuisine','Pâtissier','Chef pâtissier','EDR']
-const SOURCES = ['Pôle Emploi','LinkedIn','Cooptation','Indeed','Candidature spontanée','Autre']
-const DEPARTMENTS = {
-  '75':['Paris',48.8566,2.3522],'77':['Seine-et-Marne',48.5389,2.6600],
-  '78':['Yvelines',48.8049,2.1204],'91':['Essonne',48.6280,2.4300],
-  '92':['Hauts-de-Seine',48.8924,2.2160],'93':['Seine-Saint-Denis',48.9092,2.4392],
-  '94':['Val-de-Marne',48.7904,2.4556],'95':["Val-d'Oise",49.0361,2.0770]
-}
-const DEPT_CODES = Object.keys(DEPARTMENTS).sort()
-const PAGE_SIZE = 10
-
-let candidats = []
-let filters = { q:'', statut:'', source:'', departement:'', favorisOnly:false, dispoAvant:'' }
-let sort = { col:null, asc:true }
-let page = 1
-let proximityDept = ''
-let editingId = null
-let expandedNotes = new Set()
-
-// ---------- Base de données (Supabase) ----------
-async function loadFromSupabase() {
-  const { data, error } = await supabase
-    .from('candidats')
-    .select('*')
-    .order('updated_at', { ascending: false })
-  if (error) {
-    showToast('Erreur de chargement : ' + error.message)
-    return
-  }
-  candidats = data.map(row => row.data)
-  render()
-}
-
-async function saveToSupabase(record) {
-  const { error } = await supabase
-    .from('candidats')
-    .upsert({
-      id: record.id,
-      data: record,
-      updated_at: new Date().toISOString()
-    })
-  if (error) {
-    showToast('Erreur de sauvegarde : ' + error.message)
-    return false
-  }
-  return true
-}
-
-async function deleteFromSupabase(id) {
-  const { error } = await supabase
-    .from('candidats')
-    .delete()
-    .eq('id', id)
-  if (error) {
-    showToast('Erreur de suppression : ' + error.message)
-    return false
-  }
-  return true
-}
-
-// ---------- Temps réel (optionnel) ----------
-function subscribeToChanges() {
-  supabase
-    .channel('public:candidats')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'candidats' }, (payload) => {
-      console.log('Changement détecté', payload)
-      loadFromSupabase()
-    })
-    .subscribe()
-}
-
-// ---------- Logique métier ----------
-function uid(){ return 'c'+Date.now()+Math.random().toString(36).slice(2,7) }
-
-function daysUntil(dateStr){
-  const today = new Date(); today.setHours(0,0,0,0)
-  const d = new Date(dateStr+'T00:00:00')
-  return Math.round((d - today)/86400000)
-}
-
-function computeStatusClass(c){
-  if(c.dispoType === 'now') return 'now'
-  if(c.dispoType === 'future') return daysUntil(c.dispoDate) <= 21 ? 'soon' : 'soon'
-  return 'mission'
-}
-
-function distanceKm(dep1, dep2){
-  const a = DEPARTMENTS[dep1], b = DEPARTMENTS[dep2]
-  if(!a || !b) return null
-  const R = 6371
-  const dLat = (b[1]-a[1])*Math.PI/180, dLon = (b[2]-a[2])*Math.PI/180
-  const lat1 = a[1]*Math.PI/180, lat2 = b[1]*Math.PI/180
-  const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2
-  return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)))
-}
-
-function getFilteredAndSorted(){
-  let filtered = candidats.filter(c => {
-    const q = filters.q.toLowerCase()
-    if(q && ![c.nom,c.metier,c.localisation,c.notes,c.source].join(' ').toLowerCase().includes(q)) return false
-    if(filters.statut && computeStatusClass(c) !== filters.statut) return false
-    if(filters.source && c.source !== filters.source) return false
-    if(filters.departement && c.departement !== filters.departement) return false
-    if(filters.favorisOnly && !c.favorite) return false
-    if(filters.dispoAvant) {
-      if(c.dispoType === 'now') return true
-      if(c.dispoDate && c.dispoDate <= filters.dispoAvant) return true
-      return false
+    const METIERS = ['Chef gérant','Second de cuisine','Pâtissier','Chef pâtissier','EDR']
+    const SOURCES = ['Pôle Emploi','LinkedIn','Cooptation','Indeed','Candidature spontanée','Autre']
+    const DEPARTMENTS = {
+      '75':['Paris',48.8566,2.3522],'77':['Seine-et-Marne',48.5389,2.6600],
+      '78':['Yvelines',48.8049,2.1204],'91':['Essonne',48.6280,2.4300],
+      '92':['Hauts-de-Seine',48.8924,2.2160],'93':['Seine-Saint-Denis',48.9092,2.4392],
+      '94':['Val-de-Marne',48.7904,2.4556],'95':["Val-d'Oise",49.0361,2.0770]
     }
-    return true
-  })
+    const DEPT_CODES = Object.keys(DEPARTMENTS).sort()
+    const PAGE_SIZE = 10
 
-  if(sort.col){
-    filtered.sort((a,b) => {
-      let va = a[sort.col] || '', vb = b[sort.col] || ''
-      if(sort.col === 'dispoDate'){
-        va = a.dispoDate || '9999-99-99'; vb = b.dispoDate || '9999-99-99'
+    let candidats = []
+    let filters = { q:'', statut:'', source:'', departement:'', favorisOnly:false, dispoAvant:'' }
+    let sort = { col:null, asc:true }
+    let page = 1
+    let proximityDept = ''
+    let editingId = null
+    let expandedNotes = new Set()
+
+    // ---------- Base de données (Supabase) ----------
+    async function loadFromSupabase() {
+      const { data, error } = await supabase
+        .from('candidats')
+        .select('*')
+        .order('updated_at', { ascending: false })
+      if (error) {
+        showToast('Erreur de chargement : ' + error.message)
+        return
       }
-      if(va < vb) return sort.asc ? -1 : 1
-      if(va > vb) return sort.asc ? 1 : -1
-      return 0
-    })
-  } else {
-    filtered.sort((a,b) => {
-      const ra = a.dispoType === 'now' ? 0 : (a.dispoType === 'future' ? 1 : 2)
-      const rb = b.dispoType === 'now' ? 0 : (b.dispoType === 'future' ? 1 : 2)
-      if(ra !== rb) return ra - rb
-      if(a.dispoDate && b.dispoDate) return daysUntil(a.dispoDate) - daysUntil(b.dispoDate)
-      return (a.nom || '').localeCompare(b.nom || '')
-    })
-  }
-  if(proximityDept){
-    filtered.sort((a,b) => {
-      const dA = a.departement ? distanceKm(proximityDept, a.departement) : 999999
-      const dB = b.departement ? distanceKm(proximityDept, b.departement) : 999999
-      return dA - dB
-    })
-  }
-  return filtered
-}
-
-function paginate(arr){
-  const start = (page-1)*PAGE_SIZE
-  return arr.slice(start, start+PAGE_SIZE)
-}
-
-// ---------- Rendu ----------
-function render(){
-  const allFiltered = getFilteredAndSorted()
-  const paged = paginate(allFiltered)
-  const totalPages = Math.ceil(allFiltered.length/PAGE_SIZE)
-
-  const nowCount = candidats.filter(c => c.dispoType === 'now').length
-  const soonCount = candidats.filter(c => c.dispoType === 'future' && daysUntil(c.dispoDate) <= 30).length
-
-  root.innerHTML = `
-  <div class="wrap">
-    <div class="db-indicator">
-      🔗 Base connectée · Supabase
-    </div>
-    <p class="eyebrow">Recrutement · Suivi partagé</p>
-    <h1>Vivier de candidats</h1>
-    <div class="stats">
-      <div class="stat"><div class="n">${candidats.length}</div><div class="l">Profils</div></div>
-      <div class="stat now"><div class="n">${nowCount}</div><div class="l">Dispo maintenant</div></div>
-      <div class="stat soon"><div class="n">${soonCount}</div><div class="l">Dispo ≤ 30 j</div></div>
-    </div>
-
-    <div class="search-row">
-      <input id="search" type="text" placeholder="Rechercher…" value="${filters.q}"/>
-    </div>
-
-    <div class="toolbar">
-      <select id="prox-select">
-        <option value="">Trier par proximité…</option>
-        ${DEPT_CODES.map(c => `<option value="${c}" ${proximityDept===c?'selected':''}>${c} – ${DEPARTMENTS[c][0]}</option>`).join('')}
-      </select>
-      <select id="f-statut">
-        <option value="">Tous statuts</option>
-        <option value="now" ${filters.statut==='now'?'selected':''}>Dispo maintenant</option>
-        <option value="soon" ${filters.statut==='soon'?'selected':''}>Dispo bientôt</option>
-        <option value="mission" ${filters.statut==='mission'?'selected':''}>En mission</option>
-      </select>
-      <select id="f-source">
-        <option value="">Toutes sources</option>
-        ${SOURCES.map(s => `<option ${filters.source===s?'selected':''}>${s}</option>`).join('')}
-      </select>
-      <select id="f-departement">
-        <option value="">Tous départements</option>
-        ${DEPT_CODES.map(c => `<option value="${c}" ${filters.departement===c?'selected':''}>${c} – ${DEPARTMENTS[c][0]}</option>`).join('')}
-      </select>
-      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-        <input type="checkbox" id="f-fav" ${filters.favorisOnly?'checked':''}> ⭐ Favoris uniquement
-      </label>
-      <input type="date" id="f-dispo-avant" value="${filters.dispoAvant}" title="Disponibles avant le…" style="width:150px;"/>
-      <button class="btn btn-primary" id="add-btn">+ Ajouter un profil</button>
-      <button class="btn btn-ghost" id="refresh-btn">🔄 Actualiser</button>
-    </div>
-
-    ${allFiltered.length === 0 ? `
-      <div class="empty"><p>Aucun profil trouvé.</p></div>
-    ` : `
-      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">
-        ${allFiltered.length} candidat(s) trouvé(s) · Page ${page}/${totalPages}
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="${sort.col==='nom'?'sorted':''}" data-sort="nom">Nom</th>
-            <th class="${sort.col==='metier'?'sorted':''}" data-sort="metier">Métier</th>
-            <th class="${sort.col==='localisation'?'sorted':''}" data-sort="localisation">Localisation</th>
-            <th class="${sort.col==='source'?'sorted':''}" data-sort="source">Source</th>
-            <th>Disponibilité</th>
-            <th>Notes</th>
-            <th>CV</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${paged.map(c => `
-            <tr class="st-${computeStatusClass(c)}" data-id="${c.id}">
-              <td>
-                <span class="favorite ${c.favorite?'is-fav':''}" data-fav="${c.id}">${c.favorite?'★':'☆'}</span>
-                <span class="name">${c.nom}</span>
-                ${c.telephone ? `<div class="meta">${c.telephone}</div>` : ''}
-              </td>
-              <td>${c.metier || '—'}</td>
-              <td>
-                ${c.localisation || '—'}${c.departement ? ` <span class="meta">(${c.departement})</span>` : ''}
-                ${proximityDept && c.departement ? `<div class="countdown">≈ ${distanceKm(proximityDept, c.departement)} km</div>` : ''}
-              </td>
-              <td>${c.source || '—'}</td>
-              <td>${statusBadge(c)}</td>
-              <td>
-                <div class="notes ${expandedNotes.has(c.id) ? 'expanded':''}" data-toggle="${c.id}">${c.notes ? c.notes.replace(/</g,'&lt;') : '—'}</div>
-              </td>
-              <td>
-                ${(c.cvFile || c.cvLink) ? `<button class="cv-btn" data-cv="${c.id}">📄 Voir</button>` : '<span class="cv-none">—</span>'}
-              </td>
-              <td>
-                <div class="actions">
-                  <button data-edit="${c.id}">Modifier</button>
-                  <button class="btn-danger-text" data-del="${c.id}">Supprimer</button>
-                </div>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-      <div class="pagination">
-        <button class="btn btn-ghost" id="prev-page" ${page<=1?'disabled':''}>← Précédent</button>
-        <span>Page</span>
-        <select id="page-select">
-          ${Array.from({length:totalPages},(_,i)=>`<option ${page===i+1?'selected':''}>${i+1}</option>`).join('')}
-        </select>
-        <span>/ ${totalPages}</span>
-        <button class="btn btn-ghost" id="next-page" ${page>=totalPages?'disabled':''}>Suivant →</button>
-      </div>
-    `}
-  </div>
-  `
-
-  // Events
-  document.getElementById('search').oninput = e => { filters.q = e.target.value; page=1; render() }
-  document.getElementById('prox-select').onchange = e => { proximityDept = e.target.value; page=1; render() }
-  document.getElementById('f-statut').onchange = e => { filters.statut = e.target.value; page=1; render() }
-  document.getElementById('f-source').onchange = e => { filters.source = e.target.value; page=1; render() }
-  document.getElementById('f-departement').onchange = e => { filters.departement = e.target.value; page=1; render() }
-  document.getElementById('f-fav').onchange = e => { filters.favorisOnly = e.target.checked; page=1; render() }
-  document.getElementById('f-dispo-avant').onchange = e => { filters.dispoAvant = e.target.value; page=1; render() }
-  document.getElementById('add-btn').onclick = () => openForm(null)
-  document.getElementById('refresh-btn').onclick = () => loadFromSupabase()
-
-  document.querySelectorAll('[data-sort]').forEach(th => {
-    th.onclick = () => {
-      const col = th.dataset.sort
-      if(sort.col === col) sort.asc = !sort.asc
-      else { sort.col = col; sort.asc = true }
-      page=1
+      candidats = data.map(row => row.data)
       render()
     }
-  })
 
-  document.getElementById('prev-page')?.addEventListener('click', ()=>{ if(page>1){ page--; render() } })
-  document.getElementById('next-page')?.addEventListener('click', ()=>{ if(page<totalPages){ page++; render() } })
-  document.getElementById('page-select')?.addEventListener('change', e=>{ page = parseInt(e.target.value); render() })
+    async function saveToSupabase(record) {
+      const { error } = await supabase
+        .from('candidats')
+        .upsert({
+          id: record.id,
+          data: record,
+          updated_at: new Date().toISOString()
+        })
+      if (error) {
+        showToast('Erreur de sauvegarde : ' + error.message)
+        return false
+      }
+      return true
+    }
 
-  document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openForm(b.dataset.edit))
-  document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => openConfirmDelete(b.dataset.del))
-  document.querySelectorAll('[data-cv]').forEach(b => b.onclick = () => openCV(b.dataset.cv))
-  document.querySelectorAll('[data-toggle]').forEach(el => el.onclick = () => {
-    const id = el.dataset.toggle
-    expandedNotes.has(id) ? expandedNotes.delete(id) : expandedNotes.add(id)
-    render()
-  })
-  document.querySelectorAll('[data-fav]').forEach(el => {
-    el.onclick = (e) => {
-      e.stopPropagation()
-      const id = el.dataset.fav
+    async function deleteFromSupabase(id) {
+      const { error } = await supabase
+        .from('candidats')
+        .delete()
+        .eq('id', id)
+      if (error) {
+        showToast('Erreur de suppression : ' + error.message)
+        return false
+      }
+      return true
+    }
+
+    // ---------- Temps réel (optionnel) ----------
+    function subscribeToChanges() {
+      supabase
+        .channel('public:candidats')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'candidats' }, (payload) => {
+          console.log('Changement détecté', payload)
+          loadFromSupabase()
+        })
+        .subscribe()
+    }
+
+    // ---------- Logique métier ----------
+    function uid(){ return 'c'+Date.now()+Math.random().toString(36).slice(2,7) }
+
+    function daysUntil(dateStr){
+      const today = new Date(); today.setHours(0,0,0,0)
+      const d = new Date(dateStr+'T00:00:00')
+      return Math.round((d - today)/86400000)
+    }
+
+    function computeStatusClass(c){
+      if(c.dispoType === 'now') return 'now'
+      if(c.dispoType === 'future') return daysUntil(c.dispoDate) <= 21 ? 'soon' : 'soon'
+      return 'mission'
+    }
+
+    function distanceKm(dep1, dep2){
+      const a = DEPARTMENTS[dep1], b = DEPARTMENTS[dep2]
+      if(!a || !b) return null
+      const R = 6371
+      const dLat = (b[1]-a[1])*Math.PI/180, dLon = (b[2]-a[2])*Math.PI/180
+      const lat1 = a[1]*Math.PI/180, lat2 = b[1]*Math.PI/180
+      const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2
+      return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)))
+    }
+
+    function getFilteredAndSorted(){
+      let filtered = candidats.filter(c => {
+        const q = filters.q.toLowerCase()
+        if(q && ![c.nom,c.metier,c.localisation,c.notes,c.source].join(' ').toLowerCase().includes(q)) return false
+        if(filters.statut && computeStatusClass(c) !== filters.statut) return false
+        if(filters.source && c.source !== filters.source) return false
+        if(filters.departement && c.departement !== filters.departement) return false
+        if(filters.favorisOnly && !c.favorite) return false
+        if(filters.dispoAvant) {
+          if(c.dispoType === 'now') return true
+          if(c.dispoDate && c.dispoDate <= filters.dispoAvant) return true
+          return false
+        }
+        return true
+      })
+
+      if(sort.col){
+        filtered.sort((a,b) => {
+          let va = a[sort.col] || '', vb = b[sort.col] || ''
+          if(sort.col === 'dispoDate'){
+            va = a.dispoDate || '9999-99-99'; vb = b.dispoDate || '9999-99-99'
+          }
+          if(va < vb) return sort.asc ? -1 : 1
+          if(va > vb) return sort.asc ? 1 : -1
+          return 0
+        })
+      } else {
+        filtered.sort((a,b) => {
+          const ra = a.dispoType === 'now' ? 0 : (a.dispoType === 'future' ? 1 : 2)
+          const rb = b.dispoType === 'now' ? 0 : (b.dispoType === 'future' ? 1 : 2)
+          if(ra !== rb) return ra - rb
+          if(a.dispoDate && b.dispoDate) return daysUntil(a.dispoDate) - daysUntil(b.dispoDate)
+          return (a.nom || '').localeCompare(b.nom || '')
+        })
+      }
+      if(proximityDept){
+        filtered.sort((a,b) => {
+          const dA = a.departement ? distanceKm(proximityDept, a.departement) : 999999
+          const dB = b.departement ? distanceKm(proximityDept, b.departement) : 999999
+          return dA - dB
+        })
+      }
+      return filtered
+    }
+
+    function paginate(arr){
+      const start = (page-1)*PAGE_SIZE
+      return arr.slice(start, start+PAGE_SIZE)
+    }
+
+    // ---------- Rendu ----------
+    function render(){
+      const allFiltered = getFilteredAndSorted()
+      const paged = paginate(allFiltered)
+      const totalPages = Math.ceil(allFiltered.length/PAGE_SIZE)
+
+      const nowCount = candidats.filter(c => c.dispoType === 'now').length
+      const soonCount = candidats.filter(c => c.dispoType === 'future' && daysUntil(c.dispoDate) <= 30).length
+
+      root.innerHTML = `
+      <div class="wrap">
+        <div class="db-indicator">
+          🔗 Base connectée · Supabase
+        </div>
+        <p class="eyebrow">Recrutement · Suivi partagé</p>
+        <h1>Vivier de candidats</h1>
+        <div class="stats">
+          <div class="stat"><div class="n">${candidats.length}</div><div class="l">Profils</div></div>
+          <div class="stat now"><div class="n">${nowCount}</div><div class="l">Dispo maintenant</div></div>
+          <div class="stat soon"><div class="n">${soonCount}</div><div class="l">Dispo ≤ 30 j</div></div>
+        </div>
+
+        <div class="search-row">
+          <input id="search" type="text" placeholder="Rechercher…" value="${filters.q}"/>
+        </div>
+
+        <div class="toolbar">
+          <select id="prox-select">
+            <option value="">Trier par proximité…</option>
+            ${DEPT_CODES.map(c => `<option value="${c}" ${proximityDept===c?'selected':''}>${c} – ${DEPARTMENTS[c][0]}</option>`).join('')}
+          </select>
+          <select id="f-statut">
+            <option value="">Tous statuts</option>
+            <option value="now" ${filters.statut==='now'?'selected':''}>Dispo maintenant</option>
+            <option value="soon" ${filters.statut==='soon'?'selected':''}>Dispo bientôt</option>
+            <option value="mission" ${filters.statut==='mission'?'selected':''}>En mission</option>
+          </select>
+          <select id="f-source">
+            <option value="">Toutes sources</option>
+            ${SOURCES.map(s => `<option ${filters.source===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <select id="f-departement">
+            <option value="">Tous départements</option>
+            ${DEPT_CODES.map(c => `<option value="${c}" ${filters.departement===c?'selected':''}>${c} – ${DEPARTMENTS[c][0]}</option>`).join('')}
+          </select>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
+            <input type="checkbox" id="f-fav" ${filters.favorisOnly?'checked':''}> ⭐ Favoris uniquement
+          </label>
+          <input type="date" id="f-dispo-avant" value="${filters.dispoAvant}" title="Disponibles avant le…" style="width:150px;"/>
+          <button class="btn btn-primary" id="add-btn">+ Ajouter un profil</button>
+          <button class="btn btn-ghost" id="refresh-btn">🔄 Actualiser</button>
+        </div>
+
+        ${allFiltered.length === 0 ? `
+          <div class="empty"><p>Aucun profil trouvé.</p></div>
+        ` : `
+          <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">
+            ${allFiltered.length} candidat(s) trouvé(s) · Page ${page}/${totalPages}
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th class="${sort.col==='nom'?'sorted':''}" data-sort="nom">Nom</th>
+                <th class="${sort.col==='metier'?'sorted':''}" data-sort="metier">Métier</th>
+                <th class="${sort.col==='localisation'?'sorted':''}" data-sort="localisation">Localisation</th>
+                <th class="${sort.col==='source'?'sorted':''}" data-sort="source">Source</th>
+                <th>Disponibilité</th>
+                <th>Notes</th>
+                <th>CV</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${paged.map(c => `
+                <tr class="st-${computeStatusClass(c)}" data-id="${c.id}">
+                  <td>
+                    <span class="favorite ${c.favorite?'is-fav':''}" data-fav="${c.id}">${c.favorite?'★':'☆'}</span>
+                    <span class="name">${c.nom}</span>
+                    ${c.telephone ? `<div class="meta">${c.telephone}</div>` : ''}
+                  </td>
+                  <td>${c.metier || '—'}</td>
+                  <td>
+                    ${c.localisation || '—'}${c.departement ? ` <span class="meta">(${c.departement})</span>` : ''}
+                    ${proximityDept && c.departement ? `<div class="countdown">≈ ${distanceKm(proximityDept, c.departement)} km</div>` : ''}
+                  </td>
+                  <td>${c.source || '—'}</td>
+                  <td>${statusBadge(c)}</td>
+                  <td>
+                    <div class="notes ${expandedNotes.has(c.id) ? 'expanded':''}" data-toggle="${c.id}">${c.notes ? c.notes.replace(/</g,'&lt;') : '—'}</div>
+                  </td>
+                  <td>
+                    ${(c.cvFile || c.cvLink) ? `<button class="cv-btn" data-cv="${c.id}">📄 Voir</button>` : '<span class="cv-none">—</span>'}
+                  </td>
+                  <td>
+                    <div class="actions">
+                      <button data-edit="${c.id}">Modifier</button>
+                      <button class="btn-danger-text" data-del="${c.id}">Supprimer</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="pagination">
+            <button class="btn btn-ghost" id="prev-page" ${page<=1?'disabled':''}>← Précédent</button>
+            <span>Page</span>
+            <select id="page-select">
+              ${Array.from({length:totalPages},(_,i)=>`<option ${page===i+1?'selected':''}>${i+1}</option>`).join('')}
+            </select>
+            <span>/ ${totalPages}</span>
+            <button class="btn btn-ghost" id="next-page" ${page>=totalPages?'disabled':''}>Suivant →</button>
+          </div>
+        `}
+      </div>
+      `
+
+      // Events
+      document.getElementById('search').oninput = e => { filters.q = e.target.value; page=1; render() }
+      document.getElementById('prox-select').onchange = e => { proximityDept = e.target.value; page=1; render() }
+      document.getElementById('f-statut').onchange = e => { filters.statut = e.target.value; page=1; render() }
+      document.getElementById('f-source').onchange = e => { filters.source = e.target.value; page=1; render() }
+      document.getElementById('f-departement').onchange = e => { filters.departement = e.target.value; page=1; render() }
+      document.getElementById('f-fav').onchange = e => { filters.favorisOnly = e.target.checked; page=1; render() }
+      document.getElementById('f-dispo-avant').onchange = e => { filters.dispoAvant = e.target.value; page=1; render() }
+      document.getElementById('add-btn').onclick = () => openForm(null)
+      document.getElementById('refresh-btn').onclick = () => loadFromSupabase()
+
+      document.querySelectorAll('[data-sort]').forEach(th => {
+        th.onclick = () => {
+          const col = th.dataset.sort
+          if(sort.col === col) sort.asc = !sort.asc
+          else { sort.col = col; sort.asc = true }
+          page=1
+          render()
+        }
+      })
+
+      document.getElementById('prev-page')?.addEventListener('click', ()=>{ if(page>1){ page--; render() } })
+      document.getElementById('next-page')?.addEventListener('click', ()=>{ if(page<totalPages){ page++; render() } })
+      document.getElementById('page-select')?.addEventListener('change', e=>{ page = parseInt(e.target.value); render() })
+
+      document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openForm(b.dataset.edit))
+      document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => openConfirmDelete(b.dataset.del))
+      document.querySelectorAll('[data-cv]').forEach(b => b.onclick = () => openCV(b.dataset.cv))
+      document.querySelectorAll('[data-toggle]').forEach(el => el.onclick = () => {
+        const id = el.dataset.toggle
+        expandedNotes.has(id) ? expandedNotes.delete(id) : expandedNotes.add(id)
+        render()
+      })
+      document.querySelectorAll('[data-fav]').forEach(el => {
+        el.onclick = (e) => {
+          e.stopPropagation()
+          const id = el.dataset.fav
+          const c = candidats.find(x => x.id === id)
+          if(c){ c.favorite = !c.favorite; saveToSupabase(c); render() }
+        }
+      })
+    }
+
+    function statusBadge(c){
+      if(c.dispoType === 'now') return '<span class="badge now"><span class="dot"></span>Disponible maintenant</span>'
+      if(c.dispoType === 'future'){
+        const dj = daysUntil(c.dispoDate)
+        const label = dj <= 0 ? "dès aujourd'hui" : `dans ${dj} j`
+        return `<span class="badge soon"><span class="dot"></span>Dispo à partir du ${fmtDate(c.dispoDate)}</span><div class="countdown">${label}</div>`
+      }
+      const dj = c.dispoDate ? daysUntil(c.dispoDate) : null
+      return `<span class="badge mission"><span class="dot"></span>En mission jusqu'au ${fmtDate(c.dispoDate) || '—'}</span>${dj!==null ? `<div class="countdown">fin dans ${dj} j</div>` : ''}`
+    }
+
+    function fmtDate(d){ if(!d) return ''; const [y,m,day]=d.split('-'); return day+'/'+m+'/'+y }
+
+    function openCV(id){
       const c = candidats.find(x => x.id === id)
-      if(c){ c.favorite = !c.favorite; saveToSupabase(c); render() }
+      if(!c) return
+      if(c.cvFile){
+        try{
+          const parts = c.cvFile.split(',')
+          const binary = atob(parts[1])
+          const bytes = new Uint8Array(binary.length)
+          for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i)
+          const blob = new Blob([bytes],{type:'application/pdf'})
+          window.open(URL.createObjectURL(blob),'_blank')
+        }catch(e){ showToast("Impossible d'ouvrir ce CV") }
+      } else if(c.cvLink){
+        window.open(c.cvLink,'_blank')
+      }
     }
-  })
-}
 
-function statusBadge(c){
-  if(c.dispoType === 'now') return '<span class="badge now"><span class="dot"></span>Disponible maintenant</span>'
-  if(c.dispoType === 'future'){
-    const dj = daysUntil(c.dispoDate)
-    const label = dj <= 0 ? "dès aujourd'hui" : `dans ${dj} j`
-    return `<span class="badge soon"><span class="dot"></span>Dispo à partir du ${fmtDate(c.dispoDate)}</span><div class="countdown">${label}</div>`
-  }
-  const dj = c.dispoDate ? daysUntil(c.dispoDate) : null
-  return `<span class="badge mission"><span class="dot"></span>En mission jusqu'au ${fmtDate(c.dispoDate) || '—'}</span>${dj!==null ? `<div class="countdown">fin dans ${dj} j</div>` : ''}`
-}
-
-function fmtDate(d){ if(!d) return ''; const [y,m,day]=d.split('-'); return day+'/'+m+'/'+y }
-
-function openCV(id){
-  const c = candidats.find(x => x.id === id)
-  if(!c) return
-  if(c.cvFile){
-    try{
-      const parts = c.cvFile.split(',')
-      const binary = atob(parts[1])
-      const bytes = new Uint8Array(binary.length)
-      for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i)
-      const blob = new Blob([bytes],{type:'application/pdf'})
-      window.open(URL.createObjectURL(blob),'_blank')
-    }catch(e){ showToast("Impossible d'ouvrir ce CV") }
-  } else if(c.cvLink){
-    window.open(c.cvLink,'_blank')
-  }
-}
-
-function showToast(msg){
-  const t = document.createElement('div')
-  t.className='toast'; t.textContent=msg
-  document.body.appendChild(t)
-  requestAnimationFrame(()=>t.classList.add('show'))
-  setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),300)},1800)
-}
-
-// Formulaire identique, avec sauvegarde via Supabase
-function openForm(id){
-  editingId = id
-  const c = id ? candidats.find(x=>x.id===id) : { dispoType:'now', source:'' }
-  const overlay = document.createElement('div')
-  overlay.className='overlay'
-  overlay.innerHTML = `
-  <div class="modal">
-    <h2>${id?'Modifier le profil':'Ajouter un profil'}</h2>
-    <p class="sub">Informations partagées avec l'équipe.</p>
-    <div class="field"><label>Nom</label><input id="m-nom" value="${c.nom||''}" placeholder="Prénom Nom"/></div>
-    <div class="field">
-      <label>Métier</label>
-      <select id="m-metier-select">
-        <option value="">Sélectionner…</option>
-        ${METIERS.map(m => `<option ${c.metier===m?'selected':''}>${m}</option>`).join('')}
-        <option value="Autres" ${(c.metier && !METIERS.includes(c.metier))?'selected':''}>Autres</option>
-      </select>
-      <input id="m-metier-autre" placeholder="Précise le métier…" value="${(c.metier && !METIERS.includes(c.metier))?c.metier:''}" style="margin-top:8px;display:${(c.metier && !METIERS.includes(c.metier))?'block':'none'}"/>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Ville</label><input id="m-loc" value="${c.localisation||''}"/></div>
-      <div class="field"><label>Département</label>
-        <select id="m-dept">
-          <option value="">Sélectionner…</option>
-          ${DEPT_CODES.map(code => `<option value="${code}" ${c.departement===code?'selected':''}>${code} – ${DEPARTMENTS[code][0]}</option>`).join('')}
-        </select>
-      </div>
-    </div>
-    <div class="field"><label>Téléphone</label><input id="m-tel" value="${c.telephone||''}"/></div>
-    <div class="field">
-      <label>Source du lead</label>
-      <select id="m-source">
-        <option value="">—</option>
-        ${SOURCES.map(s => `<option ${c.source===s?'selected':''}>${s}</option>`).join('')}
-      </select>
-    </div>
-    <div class="field">
-      <label>Disponibilité</label>
-      <select id="m-type">
-        <option value="now" ${c.dispoType==='now'?'selected':''}>Disponible maintenant</option>
-        <option value="future" ${c.dispoType==='future'?'selected':''}>Disponible à partir d'une date</option>
-        <option value="mission" ${c.dispoType==='mission'?'selected':''}>En mission jusqu'à une date</option>
-      </select>
-    </div>
-    <div class="field" id="date-field" style="display:${c.dispoType==='now'?'none':'block'}">
-      <label id="date-label">${c.dispoType==='mission'?'Fin de mission':'Disponible à partir du'}</label>
-      <input type="date" id="m-date" value="${c.dispoDate||''}"/>
-    </div>
-    <div class="field"><label>Notes</label><textarea id="m-notes">${c.notes||''}</textarea></div>
-    <div class="field">
-      <label>CV</label>
-      <div id="cv-current-wrap">
-        ${c.cvFile||c.cvLink?`
-          <div class="cv-current">
-            <span>📄 ${c.cvFileName || 'Lien externe'}</span>
-            <button type="button" id="cv-remove">Retirer</button>
-          </div>`:''}
-      </div>
-      <label class="cv-upload" style="display:block;text-align:center;padding:12px;border:1.5px dashed var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;">
-        Glisser ou cliquer (PDF, max 3 Mo)
-        <input type="file" id="m-cv-file" accept="application/pdf" style="display:none;"/>
-      </label>
-      <div id="cv-filename" class="hint"></div>
-      <input id="m-cv-link" value="${c.cvLink||''}" placeholder="Ou coller un lien (Drive, SharePoint…)"/>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="m-cancel">Annuler</button>
-      <button class="btn btn-primary" id="m-save">${id?'Enregistrer':'Ajouter'}</button>
-    </div>
-  </div>`
-  document.body.appendChild(overlay)
-
-  const typeSel = overlay.querySelector('#m-type')
-  typeSel.onchange = () => {
-    overlay.querySelector('#date-field').style.display = typeSel.value==='now'?'none':'block'
-    overlay.querySelector('#date-label').textContent = typeSel.value==='mission'?'Fin de mission':'Disponible à partir du'
-  }
-  overlay.querySelector('#m-cancel').onclick = () => overlay.remove()
-  overlay.querySelector('#m-metier-select').onchange = function(){
-    overlay.querySelector('#m-metier-autre').style.display = this.value==='Autres'?'block':'none'
-  }
-
-  let newCvDataUrl = null, newCvFileName = null, cvRemoved = false
-  overlay.querySelector('#cv-remove')?.addEventListener('click', ()=>{
-    cvRemoved = true; newCvDataUrl=null; newCvFileName=null
-    overlay.querySelector('#cv-current-wrap').innerHTML=''
-    showToast('CV retiré (enregistrez pour appliquer)')
-  })
-
-  overlay.querySelector('#m-cv-file').onchange = (e) => {
-    const file = e.target.files[0]
-    if(!file) return
-    if(file.size > 3*1024*1024){ showToast('Fichier trop lourd (max 3 Mo)'); e.target.value=''; return }
-    const reader = new FileReader()
-    reader.onload = () => {
-      newCvDataUrl = reader.result; newCvFileName = file.name; cvRemoved = false
-      overlay.querySelector('#cv-filename').textContent = '✓ '+file.name
-      overlay.querySelector('#cv-current-wrap').innerHTML=''
+    function showToast(msg){
+      const t = document.createElement('div')
+      t.className='toast'; t.textContent=msg
+      document.body.appendChild(t)
+      requestAnimationFrame(()=>t.classList.add('show'))
+      setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),300)},1800)
     }
-    reader.onerror = () => showToast('Erreur de lecture')
-    reader.readAsDataURL(file)
-  }
 
-  overlay.querySelector('#m-save').onclick = async () => {
-    const nom = overlay.querySelector('#m-nom').value.trim()
-    if(!nom){ overlay.querySelector('#m-nom').style.borderColor='var(--danger)'; return }
-    const metierSel = overlay.querySelector('#m-metier-select')
-    const metier = metierSel.value==='Autres' ? overlay.querySelector('#m-metier-autre').value.trim() : metierSel.value
-    const record = {
-      id: id || uid(),
-      nom,
-      metier,
-      localisation: overlay.querySelector('#m-loc').value.trim(),
-      departement: overlay.querySelector('#m-dept').value,
-      telephone: overlay.querySelector('#m-tel').value.trim(),
-      source: overlay.querySelector('#m-source').value,
-      dispoType: typeSel.value,
-      dispoDate: typeSel.value==='now' ? '' : overlay.querySelector('#m-date').value,
-      notes: overlay.querySelector('#m-notes').value.trim(),
-      cvFile: newCvDataUrl || (cvRemoved ? '' : (c.cvFile || '')),
-      cvFileName: newCvFileName || (cvRemoved ? '' : (c.cvFileName || '')),
-      cvLink: overlay.querySelector('#m-cv-link').value.trim(),
-      favorite: c.favorite || false,
-      updatedAt: new Date().toISOString()
-    }
-    const ok = await saveToSupabase(record)
-    if(ok){
-      overlay.remove()
-      render()
-      showToast(id ? 'Profil mis à jour' : 'Profil ajouté')
-    }
-  }
-}
+    // Formulaire avec gestion par classes
+    function openForm(id){
+      editingId = id
+      const c = id ? candidats.find(x=>x.id===id) : { dispoType:'now', source:'' }
+      const overlay = document.createElement('div')
+      overlay.className='overlay'
+      overlay.innerHTML = `
+      <div class="modal">
+        <h2>${id?'Modifier le profil':'Ajouter un profil'}</h2>
+        <p class="sub">Informations partagées avec l'équipe.</p>
+        <div class="field"><label>Nom</label><input id="m-nom" value="${c.nom||''}" placeholder="Prénom Nom"/></div>
+        <div class="field">
+          <label>Métier</label>
+          <select id="m-metier-select">
+            <option value="">Sélectionner…</option>
+            ${METIERS.map(m => `<option ${c.metier===m?'selected':''}>${m}</option>`).join('')}
+            <option value="Autres" ${(c.metier && !METIERS.includes(c.metier))?'selected':''}>Autres</option>
+          </select>
+          <input id="m-metier-autre" placeholder="Précise le métier…" value="${(c.metier && !METIERS.includes(c.metier))?c.metier:''}" class="mt-2 ${(c.metier && !METIERS.includes(c.metier)) ? '' : 'hidden'}"/>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Ville</label><input id="m-loc" value="${c.localisation||''}"/></div>
+          <div class="field"><label>Département</label>
+            <select id="m-dept">
+              <option value="">Sélectionner…</option>
+              ${DEPT_CODES.map(code => `<option value="${code}" ${c.departement===code?'selected':''}>${code} – ${DEPARTMENTS[code][0]}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Téléphone</label><input id="m-tel" value="${c.telephone||''}"/></div>
+        <div class="field">
+          <label>Source du lead</label>
+          <select id="m-source">
+            <option value="">—</option>
+            ${SOURCES.map(s => `<option ${c.source===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Disponibilité</label>
+          <select id="m-type">
+            <option value="now" ${c.dispoType==='now'?'selected':''}>Disponible maintenant</option>
+            <option value="future" ${c.dispoType==='future'?'selected':''}>Disponible à partir d'une date</option>
+            <option value="mission" ${c.dispoType==='mission'?'selected':''}>En mission jusqu'à une date</option>
+          </select>
+        </div>
+        <div class="field ${c.dispoType==='now' ? 'hidden' : ''}" id="date-field">
+          <label id="date-label">${c.dispoType==='mission'?'Fin de mission':'Disponible à partir du'}</label>
+          <input type="date" id="m-date" value="${c.dispoDate||''}"/>
+        </div>
+        <div class="field"><label>Notes</label><textarea id="m-notes">${c.notes||''}</textarea></div>
+        <div class="field">
+          <label>CV</label>
+          <div id="cv-current-wrap">
+            ${c.cvFile||c.cvLink?`
+              <div class="cv-current">
+                <span>📄 ${c.cvFileName || 'Lien externe'}</span>
+                <button type="button" id="cv-remove">Retirer</button>
+              </div>`:''}
+          </div>
+          <label class="cv-upload" style="display:block;text-align:center;padding:12px;border:1.5px dashed var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;">
+            Glisser ou cliquer (PDF, max 3 Mo)
+            <input type="file" id="m-cv-file" accept="application/pdf" style="display:none;"/>
+          </label>
+          <div id="cv-filename" class="hint"></div>
+          <input id="m-cv-link" value="${c.cvLink||''}" placeholder="Ou coller un lien (Drive, SharePoint…)"/>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="m-cancel">Annuler</button>
+          <button class="btn btn-primary" id="m-save">${id?'Enregistrer':'Ajouter'}</button>
+        </div>
+      </div>`
+      document.body.appendChild(overlay)
 
-function openConfirmDelete(id){
-  const c = candidats.find(x=>x.id===id)
-  const overlay = document.createElement('div')
-  overlay.className='overlay'
-  overlay.innerHTML = `
-  <div class="modal confirm-box">
-    <h2>Supprimer ce profil ?</h2>
-    <p class="sub">${c?c.nom:''} sera définitivement retiré.</p>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="c-cancel">Annuler</button>
-      <button class="btn btn-primary" style="background:var(--danger)" id="c-confirm">Supprimer</button>
-    </div>
-  </div>`
-  document.body.appendChild(overlay)
-  overlay.querySelector('#c-cancel').onclick = () => overlay.remove()
-  overlay.querySelector('#c-confirm').onclick = async () => {
-    const ok = await deleteFromSupabase(id)
-    if(ok){
-      overlay.remove()
-      render()
-      showToast('Profil supprimé')
-    }
-  }
-}
+      const typeSel = overlay.querySelector('#m-type')
+      const dateField = overlay.querySelector('#date-field')
+      const dateLabel = overlay.querySelector('#date-label')
 
-// Lancement
-loadFromSupabase().then(() => {
-  subscribeToChanges() // active le temps réel
-})
-</script>
+      // Utilisation de classList au lieu de style.display
+      typeSel.onchange = () => {
+        if (typeSel.value === 'now') {
+          dateField.classList.add('hidden')
+        } else {
+          dateField.classList.remove('hidden')
+          dateLabel.textContent = typeSel.value === 'mission' ? 'Fin de mission' : 'Disponible à partir du'
+        }
+      }
+
+      overlay.querySelector('#m-cancel').onclick = () => overlay.remove()
+      overlay.querySelector('#m-metier-select').onchange = function(){
+        const autreInput = overlay.querySelector('#m-metier-autre')
+        if (this.value === 'Autres') {
+          autreInput.classList.remove('hidden')
+        } else {
+          autreInput.classList.add('hidden')
+        }
+      }
+
+      let newCvDataUrl = null, newCvFileName = null, cvRemoved = false
+      overlay.querySelector('#cv-remove')?.addEventListener('click', ()=>{
+        cvRemoved = true; newCvDataUrl=null; newCvFileName=null
+        overlay.querySelector('#cv-current-wrap').innerHTML=''
+        showToast('CV retiré (enregistrez pour appliquer)')
+      })
+
+      overlay.querySelector('#m-cv-file').onchange = (e) => {
+        const file = e.target.files[0]
+        if(!file) return
+        if(file.size > 3*1024*1024){ showToast('Fichier trop lourd (max 3 Mo)'); e.target.value=''; return }
+        const reader = new FileReader()
+        reader.onload = () => {
+          newCvDataUrl = reader.result; newCvFileName = file.name; cvRemoved = false
+          overlay.querySelector('#cv-filename').textContent = '✓ '+file.name
+          overlay.querySelector('#cv-current-wrap').innerHTML=''
+        }
+        reader.onerror = () => showToast('Erreur de lecture')
+        reader.readAsDataURL(file)
+      }
+
+      overlay.querySelector('#m-save').onclick = async () => {
+        const nom = overlay.querySelector('#m-nom').value.trim()
+        if(!nom){ overlay.querySelector('#m-nom').style.borderColor='var(--danger)'; return }
+        const metierSel = overlay.querySelector('#m-metier-select')
+        const metier = metierSel.value==='Autres' ? overlay.querySelector('#m-metier-autre').value.trim() : metierSel.value
+        const record = {
+          id: id || uid(),
+          nom,
+          metier,
+          localisation: overlay.querySelector('#m-loc').value.trim(),
+          departement: overlay.querySelector('#m-dept').value,
+          telephone: overlay.querySelector('#m-tel').value.trim(),
+          source: overlay.querySelector('#m-source').value,
+          dispoType: typeSel.value,
+          dispoDate: typeSel.value==='now' ? '' : overlay.querySelector('#m-date').value,
+          notes: overlay.querySelector('#m-notes').value.trim(),
+          cvFile: newCvDataUrl || (cvRemoved ? '' : (c.cvFile || '')),
+          cvFileName: newCvFileName || (cvRemoved ? '' : (c.cvFileName || '')),
+          cvLink: overlay.querySelector('#m-cv-link').value.trim(),
+          favorite: c.favorite || false,
+          updatedAt: new Date().toISOString()
+        }
+        const ok = await saveToSupabase(record)
+        if(ok){
+          overlay.remove()
+          render()
+          showToast(id ? 'Profil mis à jour' : 'Profil ajouté')
+        }
+      }
+    }
+
+    function openConfirmDelete(id){
+      const c = candidats.find(x=>x.id===id)
+      const overlay = document.createElement('div')
+      overlay.className='overlay'
+      overlay.innerHTML = `
+      <div class="modal confirm-box">
+        <h2>Supprimer ce profil ?</h2>
+        <p class="sub">${c?c.nom:''} sera définitivement retiré.</p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="c-cancel">Annuler</button>
+          <button class="btn btn-primary" style="background:var(--danger)" id="c-confirm">Supprimer</button>
+        </div>
+      </div>`
+      document.body.appendChild(overlay)
+      overlay.querySelector('#c-cancel').onclick = () => overlay.remove()
+      overlay.querySelector('#c-confirm').onclick = async () => {
+        const ok = await deleteFromSupabase(id)
+        if(ok){
+          overlay.remove()
+          render()
+          showToast('Profil supprimé')
+        }
+      }
+    }
+
+    // Lancement
+    loadFromSupabase().then(() => {
+      subscribeToChanges()
+    })
+  </script>
 </body>
 </html>
