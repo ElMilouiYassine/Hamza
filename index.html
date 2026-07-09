@@ -3,29 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hamza RH – Vivier de candidats</title>
+  <title>Hamza RH – Vivier sécurisé</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-  <!-- Feuille de style séparée -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- ========== HEADER ========== -->
-  <header class="app-header">
+  <!-- HEADER (caché tant que non connecté) -->
+  <header class="app-header" id="main-header" style="display:none;">
     <div class="header-brand">
       <h2>📋 Hamza RH</h2>
       <span class="project-tag">Projet RH</span>
     </div>
     <div class="header-user">
-      <span class="user-name">Hamza</span>
+      <span class="user-name" id="current-user"></span>
       <span class="role-badge">Gestion RH</span>
+      <button class="btn btn-ghost" id="logout-btn">Se déconnecter</button>
     </div>
   </header>
 
-  <div id="root"><div class="loading">Connexion à la base…</div></div>
+  <div id="root"></div>
 
-  <!-- ========== FOOTER ========== -->
-  <footer class="app-footer">
+  <!-- FOOTER (caché tant que non connecté) -->
+  <footer class="app-footer" id="main-footer" style="display:none;">
     <div class="footer-left">
       <span class="footer-dot"></span>
       <strong>Hamza</strong> · Gestion des Ressources Humaines
@@ -41,9 +41,9 @@
 
     const SUPABASE_URL = 'https://rjqcbrwyqpfhrftfsdvy.supabase.co'
     const SUPABASE_ANON_KEY = 'sb_publishable_dlYCOUdp8yDEpZ9gWxEBXw_XwoMsQ_V'
-
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+    // ---------- CONSTANTES ----------
     const METIERS = ['Chef gérant','Second de cuisine','Pâtissier','Chef pâtissier','EDR']
     const SOURCES = ['Pôle Emploi','LinkedIn','Cooptation','Indeed','Candidature spontanée','Autre']
     const DEPARTMENTS = {
@@ -55,6 +55,7 @@
     const DEPT_CODES = Object.keys(DEPARTMENTS).sort()
     const PAGE_SIZE = 10
 
+    // ---------- ÉTAT ----------
     let candidats = []
     let filters = { q:'', statut:'', source:'', departement:'', favorisOnly:false, dispoAvant:'' }
     let sort = { col:null, asc:true }
@@ -62,8 +63,64 @@
     let proximityDept = ''
     let editingId = null
     let expandedNotes = new Set()
+    let currentUserEmail = ''
 
-    // ---------- Base de données (Supabase) ----------
+    // ---------- AUTHENTIFICATION ----------
+    async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        currentUserEmail = session.user.email
+        document.getElementById('main-header').style.display = 'flex'
+        document.getElementById('main-footer').style.display = 'flex'
+        document.getElementById('current-user').textContent = currentUserEmail
+        await loadFromSupabase()
+        subscribeToChanges()
+        renderApp()
+      } else {
+        document.getElementById('main-header').style.display = 'none'
+        document.getElementById('main-footer').style.display = 'none'
+        renderLogin()
+      }
+    }
+
+    function renderLogin() {
+      root.innerHTML = `
+        <div class="auth-container">
+          <h2>🔐 Connexion</h2>
+          <form id="login-form">
+            <div class="field">
+              <label for="login-email">Email</label>
+              <input type="email" id="login-email" required autofocus>
+            </div>
+            <div class="field">
+              <label for="login-password">Mot de passe</label>
+              <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Se connecter</button>
+          </form>
+          <div id="auth-error" style="color:var(--danger); margin-top:8px;"></div>
+        </div>
+      `
+
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const email = document.getElementById('login-email').value
+        const password = document.getElementById('login-password').value
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) {
+          document.getElementById('auth-error').textContent = error.message
+        } else {
+          checkSession()
+        }
+      })
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      checkSession()
+    })
+
+    // ---------- SUPABASE CRUD ----------
     async function loadFromSupabase() {
       const { data, error } = await supabase
         .from('candidats')
@@ -74,7 +131,6 @@
         return
       }
       candidats = data.map(row => row.data)
-      render()
     }
 
     async function saveToSupabase(record) {
@@ -104,32 +160,27 @@
       return true
     }
 
-    // ---------- Temps réel (optionnel) ----------
     function subscribeToChanges() {
       supabase
         .channel('public:candidats')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'candidats' }, (payload) => {
-          console.log('Changement détecté', payload)
-          loadFromSupabase()
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'candidats' }, () => {
+          loadFromSupabase().then(() => renderApp())
         })
         .subscribe()
     }
 
-    // ---------- Logique métier ----------
+    // ---------- LOGIQUE MÉTIER (inchangée) ----------
     function uid(){ return 'c'+Date.now()+Math.random().toString(36).slice(2,7) }
-
     function daysUntil(dateStr){
       const today = new Date(); today.setHours(0,0,0,0)
       const d = new Date(dateStr+'T00:00:00')
       return Math.round((d - today)/86400000)
     }
-
     function computeStatusClass(c){
       if(c.dispoType === 'now') return 'now'
       if(c.dispoType === 'future') return daysUntil(c.dispoDate) <= 21 ? 'soon' : 'soon'
       return 'mission'
     }
-
     function distanceKm(dep1, dep2){
       const a = DEPARTMENTS[dep1], b = DEPARTMENTS[dep2]
       if(!a || !b) return null
@@ -139,7 +190,6 @@
       const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2
       return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)))
     }
-
     function getFilteredAndSorted(){
       let filtered = candidats.filter(c => {
         const q = filters.q.toLowerCase()
@@ -155,7 +205,6 @@
         }
         return true
       })
-
       if(sort.col){
         filtered.sort((a,b) => {
           let va = a[sort.col] || '', vb = b[sort.col] || ''
@@ -184,26 +233,38 @@
       }
       return filtered
     }
-
     function paginate(arr){
       const start = (page-1)*PAGE_SIZE
       return arr.slice(start, start+PAGE_SIZE)
     }
+    function statusBadge(c){
+      if(c.dispoType === 'now') return '<span class="badge now"><span class="dot"></span>Disponible maintenant</span>'
+      if(c.dispoType === 'future'){
+        const dj = daysUntil(c.dispoDate)
+        const label = dj <= 0 ? "dès aujourd'hui" : `dans ${dj} j`
+        return `<span class="badge soon"><span class="dot"></span>Dispo à partir du ${fmtDate(c.dispoDate)}</span><div class="countdown">${label}</div>`
+      }
+      const dj = c.dispoDate ? daysUntil(c.dispoDate) : null
+      return `<span class="badge mission"><span class="dot"></span>En mission jusqu'au ${fmtDate(c.dispoDate) || '—'}</span>${dj!==null ? `<div class="countdown">fin dans ${dj} j</div>` : ''}`
+    }
+    function fmtDate(d){ if(!d) return ''; const [y,m,day]=d.split('-'); return day+'/'+m+'/'+y }
+    function escapeHTML(str) {
+      const div = document.createElement('div')
+      div.appendChild(document.createTextNode(str))
+      return div.innerHTML
+    }
 
-    // ---------- Rendu ----------
-    function render(){
+    // ---------- RENDU APPLICATION ----------
+    function renderApp(){
       const allFiltered = getFilteredAndSorted()
       const paged = paginate(allFiltered)
       const totalPages = Math.ceil(allFiltered.length/PAGE_SIZE)
-
       const nowCount = candidats.filter(c => c.dispoType === 'now').length
       const soonCount = candidats.filter(c => c.dispoType === 'future' && daysUntil(c.dispoDate) <= 30).length
 
       root.innerHTML = `
       <div class="wrap">
-        <div class="db-indicator">
-          🔗 Base connectée · Supabase
-        </div>
+        <div class="db-indicator">🔗 Base connectée · Supabase</div>
         <p class="eyebrow">Recrutement · Suivi partagé</p>
         <h1>Vivier de candidats</h1>
         <div class="stats">
@@ -213,7 +274,7 @@
         </div>
 
         <div class="search-row">
-          <input id="search" type="text" placeholder="Rechercher…" value="${filters.q}"/>
+          <input id="search" type="text" placeholder="Rechercher…" value="${escapeHTML(filters.q)}"/>
         </div>
 
         <div class="toolbar">
@@ -267,18 +328,18 @@
                 <tr class="st-${computeStatusClass(c)}" data-id="${c.id}">
                   <td>
                     <span class="favorite ${c.favorite?'is-fav':''}" data-fav="${c.id}">${c.favorite?'★':'☆'}</span>
-                    <span class="name">${c.nom}</span>
-                    ${c.telephone ? `<div class="meta">${c.telephone}</div>` : ''}
+                    <span class="name">${escapeHTML(c.nom)}</span>
+                    ${c.telephone ? `<div class="meta">${escapeHTML(c.telephone)}</div>` : ''}
                   </td>
-                  <td>${c.metier || '—'}</td>
+                  <td>${escapeHTML(c.metier || '—')}</td>
                   <td>
-                    ${c.localisation || '—'}${c.departement ? ` <span class="meta">(${c.departement})</span>` : ''}
+                    ${escapeHTML(c.localisation || '—')}${c.departement ? ` <span class="meta">(${c.departement})</span>` : ''}
                     ${proximityDept && c.departement ? `<div class="countdown">≈ ${distanceKm(proximityDept, c.departement)} km</div>` : ''}
                   </td>
-                  <td>${c.source || '—'}</td>
+                  <td>${escapeHTML(c.source || '—')}</td>
                   <td>${statusBadge(c)}</td>
                   <td>
-                    <div class="notes ${expandedNotes.has(c.id) ? 'expanded':''}" data-toggle="${c.id}">${c.notes ? c.notes.replace(/</g,'&lt;') : '—'}</div>
+                    <div class="notes ${expandedNotes.has(c.id) ? 'expanded':''}" data-toggle="${c.id}">${c.notes ? escapeHTML(c.notes) : '—'}</div>
                   </td>
                   <td>
                     ${(c.cvFile || c.cvLink) ? `<button class="cv-btn" data-cv="${c.id}">📄 Voir</button>` : '<span class="cv-none">—</span>'}
@@ -306,16 +367,16 @@
       </div>
       `
 
-      // Events
-      document.getElementById('search').oninput = e => { filters.q = e.target.value; page=1; render() }
-      document.getElementById('prox-select').onchange = e => { proximityDept = e.target.value; page=1; render() }
-      document.getElementById('f-statut').onchange = e => { filters.statut = e.target.value; page=1; render() }
-      document.getElementById('f-source').onchange = e => { filters.source = e.target.value; page=1; render() }
-      document.getElementById('f-departement').onchange = e => { filters.departement = e.target.value; page=1; render() }
-      document.getElementById('f-fav').onchange = e => { filters.favorisOnly = e.target.checked; page=1; render() }
-      document.getElementById('f-dispo-avant').onchange = e => { filters.dispoAvant = e.target.value; page=1; render() }
-      document.getElementById('add-btn').onclick = () => openForm(null)
-      document.getElementById('refresh-btn').onclick = () => loadFromSupabase()
+      // Attacher les événements
+      document.getElementById('search')?.addEventListener('input', e => { filters.q = e.target.value; page=1; renderApp() })
+      document.getElementById('prox-select')?.addEventListener('change', e => { proximityDept = e.target.value; page=1; renderApp() })
+      document.getElementById('f-statut')?.addEventListener('change', e => { filters.statut = e.target.value; page=1; renderApp() })
+      document.getElementById('f-source')?.addEventListener('change', e => { filters.source = e.target.value; page=1; renderApp() })
+      document.getElementById('f-departement')?.addEventListener('change', e => { filters.departement = e.target.value; page=1; renderApp() })
+      document.getElementById('f-fav')?.addEventListener('change', e => { filters.favorisOnly = e.target.checked; page=1; renderApp() })
+      document.getElementById('f-dispo-avant')?.addEventListener('change', e => { filters.dispoAvant = e.target.value; page=1; renderApp() })
+      document.getElementById('add-btn')?.addEventListener('click', () => openForm(null))
+      document.getElementById('refresh-btn')?.addEventListener('click', () => loadFromSupabase().then(() => renderApp()))
 
       document.querySelectorAll('[data-sort]').forEach(th => {
         th.onclick = () => {
@@ -323,13 +384,13 @@
           if(sort.col === col) sort.asc = !sort.asc
           else { sort.col = col; sort.asc = true }
           page=1
-          render()
+          renderApp()
         }
       })
 
-      document.getElementById('prev-page')?.addEventListener('click', ()=>{ if(page>1){ page--; render() } })
-      document.getElementById('next-page')?.addEventListener('click', ()=>{ if(page<totalPages){ page++; render() } })
-      document.getElementById('page-select')?.addEventListener('change', e=>{ page = parseInt(e.target.value); render() })
+      document.getElementById('prev-page')?.addEventListener('click', ()=>{ if(page>1){ page--; renderApp() } })
+      document.getElementById('next-page')?.addEventListener('click', ()=>{ if(page<totalPages){ page++; renderApp() } })
+      document.getElementById('page-select')?.addEventListener('change', e=>{ page = parseInt(e.target.value); renderApp() })
 
       document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openForm(b.dataset.edit))
       document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => openConfirmDelete(b.dataset.del))
@@ -337,31 +398,19 @@
       document.querySelectorAll('[data-toggle]').forEach(el => el.onclick = () => {
         const id = el.dataset.toggle
         expandedNotes.has(id) ? expandedNotes.delete(id) : expandedNotes.add(id)
-        render()
+        renderApp()
       })
       document.querySelectorAll('[data-fav]').forEach(el => {
         el.onclick = (e) => {
           e.stopPropagation()
           const id = el.dataset.fav
           const c = candidats.find(x => x.id === id)
-          if(c){ c.favorite = !c.favorite; saveToSupabase(c); render() }
+          if(c){ c.favorite = !c.favorite; saveToSupabase(c); renderApp() }
         }
       })
     }
 
-    function statusBadge(c){
-      if(c.dispoType === 'now') return '<span class="badge now"><span class="dot"></span>Disponible maintenant</span>'
-      if(c.dispoType === 'future'){
-        const dj = daysUntil(c.dispoDate)
-        const label = dj <= 0 ? "dès aujourd'hui" : `dans ${dj} j`
-        return `<span class="badge soon"><span class="dot"></span>Dispo à partir du ${fmtDate(c.dispoDate)}</span><div class="countdown">${label}</div>`
-      }
-      const dj = c.dispoDate ? daysUntil(c.dispoDate) : null
-      return `<span class="badge mission"><span class="dot"></span>En mission jusqu'au ${fmtDate(c.dispoDate) || '—'}</span>${dj!==null ? `<div class="countdown">fin dans ${dj} j</div>` : ''}`
-    }
-
-    function fmtDate(d){ if(!d) return ''; const [y,m,day]=d.split('-'); return day+'/'+m+'/'+y }
-
+    // ---------- MODALES (CV, FORMULAIRE, CONFIRMATION) ----------
     function openCV(id){
       const c = candidats.find(x => x.id === id)
       if(!c) return
@@ -387,7 +436,6 @@
       setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),300)},1800)
     }
 
-    // Formulaire avec gestion par classes
     function openForm(id){
       editingId = id
       const c = id ? candidats.find(x=>x.id===id) : { dispoType:'now', source:'' }
@@ -397,7 +445,7 @@
       <div class="modal">
         <h2>${id?'Modifier le profil':'Ajouter un profil'}</h2>
         <p class="sub">Informations partagées avec l'équipe.</p>
-        <div class="field"><label>Nom</label><input id="m-nom" value="${c.nom||''}" placeholder="Prénom Nom"/></div>
+        <div class="field"><label>Nom</label><input id="m-nom" value="${escapeHTML(c.nom||'')}" placeholder="Prénom Nom"/></div>
         <div class="field">
           <label>Métier</label>
           <select id="m-metier-select">
@@ -405,10 +453,10 @@
             ${METIERS.map(m => `<option ${c.metier===m?'selected':''}>${m}</option>`).join('')}
             <option value="Autres" ${(c.metier && !METIERS.includes(c.metier))?'selected':''}>Autres</option>
           </select>
-          <input id="m-metier-autre" placeholder="Précise le métier…" value="${(c.metier && !METIERS.includes(c.metier))?c.metier:''}" class="mt-2 ${(c.metier && !METIERS.includes(c.metier)) ? '' : 'hidden'}"/>
+          <input id="m-metier-autre" placeholder="Précise le métier…" value="${escapeHTML((c.metier && !METIERS.includes(c.metier))?c.metier:'')}" class="mt-2 ${(c.metier && !METIERS.includes(c.metier)) ? '' : 'hidden'}"/>
         </div>
         <div class="row2">
-          <div class="field"><label>Ville</label><input id="m-loc" value="${c.localisation||''}"/></div>
+          <div class="field"><label>Ville</label><input id="m-loc" value="${escapeHTML(c.localisation||'')}"/></div>
           <div class="field"><label>Département</label>
             <select id="m-dept">
               <option value="">Sélectionner…</option>
@@ -416,7 +464,7 @@
             </select>
           </div>
         </div>
-        <div class="field"><label>Téléphone</label><input id="m-tel" value="${c.telephone||''}"/></div>
+        <div class="field"><label>Téléphone</label><input id="m-tel" value="${escapeHTML(c.telephone||'')}"/></div>
         <div class="field">
           <label>Source du lead</label>
           <select id="m-source">
@@ -436,13 +484,13 @@
           <label id="date-label">${c.dispoType==='mission'?'Fin de mission':'Disponible à partir du'}</label>
           <input type="date" id="m-date" value="${c.dispoDate||''}"/>
         </div>
-        <div class="field"><label>Notes</label><textarea id="m-notes">${c.notes||''}</textarea></div>
+        <div class="field"><label>Notes</label><textarea id="m-notes">${escapeHTML(c.notes||'')}</textarea></div>
         <div class="field">
           <label>CV</label>
           <div id="cv-current-wrap">
             ${c.cvFile||c.cvLink?`
               <div class="cv-current">
-                <span>📄 ${c.cvFileName || 'Lien externe'}</span>
+                <span>📄 ${escapeHTML(c.cvFileName || 'Lien externe')}</span>
                 <button type="button" id="cv-remove">Retirer</button>
               </div>`:''}
           </div>
@@ -451,7 +499,7 @@
             <input type="file" id="m-cv-file" accept="application/pdf" style="display:none;"/>
           </label>
           <div id="cv-filename" class="hint"></div>
-          <input id="m-cv-link" value="${c.cvLink||''}" placeholder="Ou coller un lien (Drive, SharePoint…)"/>
+          <input id="m-cv-link" value="${escapeHTML(c.cvLink||'')}" placeholder="Ou coller un lien (Drive, SharePoint…)"/>
         </div>
         <div class="modal-actions">
           <button class="btn btn-ghost" id="m-cancel">Annuler</button>
@@ -464,7 +512,6 @@
       const dateField = overlay.querySelector('#date-field')
       const dateLabel = overlay.querySelector('#date-label')
 
-      // Utilisation de classList au lieu de style.display
       typeSel.onchange = () => {
         if (typeSel.value === 'now') {
           dateField.classList.add('hidden')
@@ -530,7 +577,7 @@
         const ok = await saveToSupabase(record)
         if(ok){
           overlay.remove()
-          render()
+          renderApp()
           showToast(id ? 'Profil mis à jour' : 'Profil ajouté')
         }
       }
@@ -543,7 +590,7 @@
       overlay.innerHTML = `
       <div class="modal confirm-box">
         <h2>Supprimer ce profil ?</h2>
-        <p class="sub">${c?c.nom:''} sera définitivement retiré.</p>
+        <p class="sub">${c?escapeHTML(c.nom):''} sera définitivement retiré.</p>
         <div class="modal-actions">
           <button class="btn btn-ghost" id="c-cancel">Annuler</button>
           <button class="btn btn-primary" style="background:var(--danger)" id="c-confirm">Supprimer</button>
@@ -555,16 +602,14 @@
         const ok = await deleteFromSupabase(id)
         if(ok){
           overlay.remove()
-          render()
+          renderApp()
           showToast('Profil supprimé')
         }
       }
     }
 
-    // Lancement
-    loadFromSupabase().then(() => {
-      subscribeToChanges()
-    })
+    // ---------- LANCEMENT ----------
+    checkSession()
   </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 /* =========================================
    HAMZA RH – VIVIER DE CANDIDATS
    Feuille de style principale
+   (avec styles d'authentification)
    ========================================= */
 
 /* ---------- VARIABLES ---------- */
@@ -52,6 +53,87 @@ body {
 
 .mt-2 {
   margin-top: 8px;
+}
+
+/* ---------- AUTHENTIFICATION ---------- */
+.auth-container {
+  max-width: 400px;
+  margin: 80px auto 0;
+  background: var(--surface);
+  padding: 32px 28px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+.auth-container h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.auth-container .field {
+  margin-bottom: 16px;
+}
+
+.auth-container .field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.auth-container .field input {
+  width: 100%;
+  font-size: 14px;
+  padding: 11px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.auth-container .field input:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-soft);
+  background: var(--surface);
+}
+
+.auth-container .btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.auth-container p {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 16px;
+}
+
+.auth-container p a {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-container p a:hover {
+  text-decoration: underline;
+}
+
+#auth-error {
+  color: var(--danger);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 12px;
 }
 
 /* ---------- HEADER ---------- */
@@ -699,7 +781,7 @@ tr.st-mission td:first-child {
   color: var(--teal);
 }
 
-/* ---------- FOOTER (AJOUTÉ) ---------- */
+/* ---------- FOOTER ---------- */
 .app-footer {
   background: var(--surface);
   border-top: 1px solid var(--border);
@@ -711,7 +793,7 @@ tr.st-mission td:first-child {
   gap: 8px;
   font-size: 12.5px;
   color: var(--ink-soft);
-  margin-top: auto; /* le pousse en bas grâce au flex column du body */
+  margin-top: auto;
 }
 
 .footer-left {
@@ -747,6 +829,11 @@ tr.st-mission td:first-child {
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 640px) {
+  .auth-container {
+    margin: 40px 16px 0;
+    padding: 24px 20px;
+  }
+
   .row2 {
     grid-template-columns: 1fr;
   }
