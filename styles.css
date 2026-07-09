@@ -217,6 +217,30 @@ body {
   margin: 0 auto;
 }
 
+/* ---------- NOUVELLE SECTION : TOP ROW (TITRE + IMAGE) ---------- */
+.top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.top-left {
+  flex: 1;
+}
+
+.top-right {
+  flex-shrink: 0;
+}
+
+.top-image {
+  max-width: 380px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(251, 251, 251, 0.08);
+}
+
 /* ---------- TYPOGRAPHIE ---------- */
 .eyebrow {
   font-family: 'IBM Plex Mono', monospace;
@@ -866,5 +890,16 @@ tr.st-mission td:first-child {
     padding: 12px 16px;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* Sur mobile, l'image passe au-dessus ou se centre */
+  .top-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .top-image {
+    max-width: 120px;
   }
 }

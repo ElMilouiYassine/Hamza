@@ -254,7 +254,7 @@
       return div.innerHTML
     }
 
-    // ---------- RENDU APPLICATION ----------
+    // ---------- RENDU APPLICATION (MODIFIÉ AVEC IMAGE) ----------
     function renderApp(){
       const allFiltered = getFilteredAndSorted()
       const paged = paginate(allFiltered)
@@ -264,13 +264,22 @@
 
       root.innerHTML = `
       <div class="wrap">
-        <div class="db-indicator">🔗 Base connectée · Supabase</div>
-        <p class="eyebrow">Recrutement · Suivi partagé</p>
-        <h1>Vivier de candidats</h1>
-        <div class="stats">
-          <div class="stat"><div class="n">${candidats.length}</div><div class="l">Profils</div></div>
-          <div class="stat now"><div class="n">${nowCount}</div><div class="l">Dispo maintenant</div></div>
-          <div class="stat soon"><div class="n">${soonCount}</div><div class="l">Dispo ≤ 30 j</div></div>
+        <!-- Nouveau conteneur flex pour le bloc gauche + image droite -->
+        <div class="top-row">
+          <div class="top-left">
+            <div class="db-indicator">🔗 Base connectée · Supabase</div>
+            <p class="eyebrow">Recrutement · Suivi partagé</p>
+            <h1>Vivier de candidats</h1>
+            <div class="stats">
+              <div class="stat"><div class="n">${candidats.length}</div><div class="l">Profils</div></div>
+              <div class="stat now"><div class="n">${nowCount}</div><div class="l">Dispo maintenant</div></div>
+              <div class="stat soon"><div class="n">${soonCount}</div><div class="l">Dispo ≤ 30 j</div></div>
+            </div>
+          </div>
+          <!-- Image à droite -->
+          <div class="top-right">
+            <img src="logo.png" alt="Logo Hamza RH" class="top-image" />
+          </div>
         </div>
 
         <div class="search-row">
@@ -367,7 +376,7 @@
       </div>
       `
 
-      // Attacher les événements
+      // Attacher les événements (inchangé)
       document.getElementById('search')?.addEventListener('input', e => { filters.q = e.target.value; page=1; renderApp() })
       document.getElementById('prox-select')?.addEventListener('change', e => { proximityDept = e.target.value; page=1; renderApp() })
       document.getElementById('f-statut')?.addEventListener('change', e => { filters.statut = e.target.value; page=1; renderApp() })
